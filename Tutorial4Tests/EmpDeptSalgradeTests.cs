@@ -1,4 +1,5 @@
-﻿using Tutorial3.Models;
+﻿using System.Text.RegularExpressions;
+using Tutorial3.Models;
 
 public class EmpDeptSalgradeTests
 {
@@ -129,9 +130,9 @@ public class EmpDeptSalgradeTests
     {
         var emps = Database.GetEmps();
 
-        // var result = null; 
-        //
-        // Assert.Contains(result, r => r.DeptNo == 30 && r.AvgSal > 1000);
+         var result = emps.GroupBy(emp => emp.DeptNo).Select(emp => new {DeptNo = emp.Key, AvgSal = emp.Average(emp1 => emp1.Sal)}); 
+        
+         Assert.Contains(result, r => r.DeptNo == 30 && r.AvgSal > 1000);
     }
 
     // 10. Complex filter with subquery and join
@@ -141,8 +142,12 @@ public class EmpDeptSalgradeTests
     {
         var emps = Database.GetEmps();
 
-        // var result = null; 
-        //
-        // Assert.Contains("ALLEN", result);
+          var result = emps
+              .Where(emp => emp.Sal > emps
+                  .Where(e => e.DeptNo == emp.DeptNo)
+                  .Average(e => e.Sal))
+              .Select(emp => emp.EName).ToList(); 
+         
+          Assert.Contains("ALLEN", result);
     }
 }
