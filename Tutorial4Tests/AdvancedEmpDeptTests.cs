@@ -9,7 +9,7 @@ public class AdvancedEmpDeptTests
     {
         var emps = Database.GetEmps();
 
-        decimal? maxSalary = null; 
+        decimal? maxSalary = emps.Max(e => e.Sal); 
 
         Assert.Equal(5000, maxSalary);
     }
@@ -21,7 +21,9 @@ public class AdvancedEmpDeptTests
     {
         var emps = Database.GetEmps();
 
-        decimal? minSalary = null;
+        decimal? minSalary = emps
+            .Where(e => e.DeptNo == 30)
+            .Min(e => e.Sal);
 
         Assert.Equal(1250, minSalary);
     }
@@ -33,10 +35,10 @@ public class AdvancedEmpDeptTests
     {
         var emps = Database.GetEmps();
 
-        // var firstTwo = null; 
-        //
-        // Assert.Equal(2, firstTwo.Count);
-        // Assert.True(firstTwo[0].HireDate <= firstTwo[1].HireDate);
+         var firstTwo = emps.Take(2).OrderBy(e => e.HireDate).ToList(); 
+        
+         Assert.Equal(2, firstTwo.Count);
+         Assert.True(firstTwo[0].HireDate <= firstTwo[1].HireDate);
     }
 
     // 14. DISTINCT job titles
@@ -46,10 +48,12 @@ public class AdvancedEmpDeptTests
     {
         var emps = Database.GetEmps();
 
-        // var jobs = null; 
-        //
-        // Assert.Contains("PRESIDENT", jobs);
-        // Assert.Contains("SALESMAN", jobs);
+         var jobs = emps.Select(emp => emp.Job)
+             .Distinct()
+             .ToList(); 
+        
+         Assert.Contains("PRESIDENT", jobs);
+         Assert.Contains("SALESMAN", jobs);
     }
 
     // 15. Employees with managers (NOT NULL Mgr)
@@ -59,9 +63,9 @@ public class AdvancedEmpDeptTests
     {
         var emps = Database.GetEmps();
 
-        // var withMgr = null; 
-        //
-        // Assert.All(withMgr, e => Assert.NotNull(e.Mgr));
+         var withMgr = emps.Where(emp => emp.Mgr != null).ToList(); 
+        
+         Assert.All(withMgr, e => Assert.NotNull(e.Mgr));
     }
 
     // 16. All employees earn more than 500
