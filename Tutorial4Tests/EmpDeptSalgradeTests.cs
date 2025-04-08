@@ -96,7 +96,7 @@ public class EmpDeptSalgradeTests
     {
         var emps = Database.GetEmps();
 
-         var result = emps.Where(emp => emp.Comm != null).Select(emp => new {EName = emp.EName, Comm = emp.Comm}); 
+         var result = emps.Where(emp => emp.Comm != null).Select(emp => new {EName = emp.EName, Comm = emp.Comm}).ToList(); 
         
          Assert.All(result, r => Assert.NotNull(r.Comm));
     }
